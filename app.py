@@ -8,6 +8,38 @@ import string
 from collections import Counter, defaultdict
 from typing import Dict, List
 
+#Tkinter entry setup
+D1Entry = Entry(root, width = 20)
+DicEntry = Entry(root, width = 20)
+ValEntry = Entry(root, width = 20)
+VerifEntry1 = Entry(root, width = 10)
+VerifEntry1 = Entry(root, width = 10)
+VerifEntry1 = Entry(root, width = 10)
+VerifEntry1 = Entry(root, width = 10)
+VerifEntry1 = Entry(root, width = 10)
+
+#Tkinter functions
+def addDead():
+    return
+def showDead():
+    return
+def addDic():
+    return
+def showDic():
+    return
+def addVeri():
+    return
+def showVeri():
+    return
+
+#Tkinter button setup
+EntryAdd = Button(root, text = 'Add Dead Letters', command = addDead)
+EntryShow = Button (root, text = 'Show Dead Letters', command = showDead)
+DicAdd = Button(root, text = 'Add flawed Dictionary', command = addDic)
+DicShow = Button(root, text = 'Show flawed Dictionary', command = showDic)
+VeriAdd = Button(root, text = 'Add Verified Letters', command = addVeri)
+VeriShow = Button(root, text = 'Show Verified Letters', command = showVeri)
+# TODO: Add a result generator button at the end
 
 DEAD_LETTERS = ['c','p','r','e','f','a', 'k','l','m','s','b']
 
