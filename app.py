@@ -8,29 +8,50 @@ import string
 from collections import Counter, defaultdict
 from typing import Dict, List
 
+DEAD_LETTERS = []
+
+CORRECT_LETTERS_WRONG_POSITIONS: Dict[str, int] = {}
+
+VERIFIED_LETTERS: List[str] = ['', '', '', '', '']
+
+answerList = []
+AnsLabel = Label(root)
+AnsLabel.grid(row = 9)
+
 #Tkinter entry setup
 D1Entry = Entry(root, width = 20)
 DicEntry = Entry(root, width = 20)
 ValEntry = Entry(root, width = 20)
 VerifEntry1 = Entry(root, width = 10)
-VerifEntry1 = Entry(root, width = 10)
-VerifEntry1 = Entry(root, width = 10)
-VerifEntry1 = Entry(root, width = 10)
-VerifEntry1 = Entry(root, width = 10)
+VerifEntry2 = Entry(root, width = 10)
+VerifEntry3 = Entry(root, width = 10)
+VerifEntry4 = Entry(root, width = 10)
+VerifEntry5 = Entry(root, width = 10)
 
 #Tkinter functions
 def addDead():
-    return
+    DEAD_LETTERS.append(str(D1Entry.get()))
 def showDead():
-    return
+    DeadLabel = Label(root, text = str(DEAD_LETTERS))
+    DeadLabel.grid(row = 1)
+    print(DEAD_LETTERS)
 def addDic():
-    return
+    if str(DicEntry.get()) in CORRECT_LETTERS_WRONG_POSITIONS:
+        CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())].append(int(ValEntry.get()))
+    else:
+        CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())] = [int(ValEntry.get())]
 def showDic():
-    return
+    DicLabel = Label(root, text = str(CORRECT_LETTERS_WRONG_POSITIONS))
+    DicLabel.grid(row = 3)
 def addVeri():
-    return
+    VERIFIED_LETTERS[0] = str(VerifEntry1.get())
+    VERIFIED_LETTERS[1] = str(VerifEntry2.get())
+    VERIFIED_LETTERS[2] = str(VerifEntry3.get())
+    VERIFIED_LETTERS[3] = str(VerifEntry4.get())
+    VERIFIED_LETTERS[4] = str(VerifEntry5.get())
 def showVeri():
-    return
+    VeriLabel = Label(root, text = str(VERIFIED_LETTERS))
+    VeriLabel.grid()
 
 #Tkinter button setup
 EntryAdd = Button(root, text = 'Add Dead Letters', command = addDead)
@@ -41,26 +62,49 @@ VeriAdd = Button(root, text = 'Add Verified Letters', command = addVeri)
 VeriShow = Button(root, text = 'Show Verified Letters', command = showVeri)
 # TODO: Add a result generator button at the end
 
-DEAD_LETTERS = ['c','p','r','e','f','a', 'k','l','m','s','b']
-
-CORRECT_LETTERS_WRONG_POSITIONS: Dict[str, int] = {}
-
-VERIFIED_LETTERS: List[str] = ['', '', '', 'd', 'y']
+#Layout of Buttons and Entrys
+D1Entry.grid(row = 0, column = 0, columnspan = 5)
+EntryAdd.grid(row = 0, column = 5, columnspan = 2)
+EntryShow.grid(row = 0, column = 7, columnspan = 2)
+DicEntry.grid(row = 2, column = 0, columnspan = 2)
+ValEntry.grid(row = 2, column = 2, columnspan = 2)
+DicAdd.grid(row = 2, column = 4, columnspan = 2)
+DicShow.grid(row = 2, column = 6, columnspan = 2)
+VerifEntry1.grid(row = 4, column = 0, columnspan = 2)
+VerifEntry2.grid(row = 4, column = 2, columnspan = 2)
+VerifEntry3.grid(row = 4, column = 4, columnspan = 2)
+VerifEntry4.grid(row = 4, column = 6, columnspan = 2)
+VerifEntry5.grid(row = 4, column = 8, columnspan = 2)
+VeriAdd.grid(row = 5, column = 0, columnspan = 3)
+VeriShow.grid(row = 5, column = 3, columnspan = 3)
 
 
 """Do not edit code below this line!"""
-ALPHABET = string.ascii_lowercase
-NUM_BEST_GUESSES = 5  # The number of best guesses to return to the user
-# We do this in case the user forgot to remove the letter from the dead letters when if it
-# becomes verified (such as double occurnaces).
-DEAD_LETTERS_MINUS_VERIFIED = set(DEAD_LETTERS) - set(VERIFIED_LETTERS)
 
+def convertTuple(tup):
+        # initialize an empty string
+    w = ''
+    for item in tup:
+        w = w + str(item)
+    return w
 
 def main():
     """Wordle has two sets of lists (one is a short unordered list of the answers, one is a long
     ordered list of all possible words). All words in the lists are unique and are exactly 5
     letters long. Some words have repeating letters such as `knoll`
     """
+    answerList.clear()
+
+    global ALPHABET
+    global NUM_BEST_GUESSES
+    global DEAD_LETTERS_MINUS_VERIFIED
+
+    ALPHABET = string.ascii_lowercase
+    NUM_BEST_GUESSES = 5  # The number of best guesses to return to the user
+# We do this in case the user forgot to remove the letter from the dead letters when if it
+# becomes verified (such as double occurnaces).
+    DEAD_LETTERS_MINUS_VERIFIED = set(DEAD_LETTERS) - set(VERIFIED_LETTERS)
+    
     # TODO: Longterm we should grab the lists from the site in the chance they get updated overtime
     answer_list = _read_file('wordle_answers.json')
     non_answer_possible_words = _read_file('non_wordle_answers.json')
@@ -80,7 +124,9 @@ def main():
     for word in sorted(best_words, key=lambda x: x[0].startswith(most_common_start[0][0]), reverse=True)[
         :NUM_BEST_GUESSES
     ]:
-        print(word)
+        answerList.append(convertTuple(word)) 
+    AnsLabel.config(text = str(answerList))
+
 
 
 def get_most_common(possible_words):
@@ -193,9 +239,15 @@ def _read_file(filename):
     return word_list
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
+def clearAnswer():
+    answerList.clear()
+
+#The answer button
+AnswerShow = Button(root, text = "Show Answer", command = main)
+AnswerShow.grid(row = 6, column = 2, ipadx = 100)
 
 root.mainloop()
 
