@@ -14,24 +14,10 @@ CORRECT_LETTERS_WRONG_POSITIONS: Dict[str, int] = {}
 
 VERIFIED_LETTERS: List[str] = ['', '', '', '', '']
 
-answerList = []
-AnsLabel = Label(root)
-AnsLabel.grid(row = 9)
-
-#Tkinter entry setup
-D1Entry = Entry(root, width = 20)
-DicEntry = Entry(root, width = 20)
-ValEntry = Entry(root, width = 20)
-VerifEntry1 = Entry(root, width = 10)
-VerifEntry2 = Entry(root, width = 10)
-VerifEntry3 = Entry(root, width = 10)
-VerifEntry4 = Entry(root, width = 10)
-VerifEntry5 = Entry(root, width = 10)
-
 #Tkinter functions
 def addDead():
     DEAD_LETTERS.append(str(D1Entry.get()))
-    DeadLabel = Label(root, text = str(DEAD_LETTERS))
+    DeadLabel = Label(DeadFrame, text = str(DEAD_LETTERS))
     DeadLabel.grid(row = 1)
 
 def addDic():
@@ -39,8 +25,8 @@ def addDic():
         CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())].append(int(ValEntry.get()))
     else:
         CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())] = [int(ValEntry.get())]
-    DicLabel = Label(root, text = str(CORRECT_LETTERS_WRONG_POSITIONS))
-    DicLabel.grid(row = 3)
+    DicLabel = Label(DicFrame, text = str(CORRECT_LETTERS_WRONG_POSITIONS))
+    DicLabel.grid(row = 1)
 
 def addVeri():
     VERIFIED_LETTERS[0] = str(VerifEntry1.get())
@@ -48,28 +34,53 @@ def addVeri():
     VERIFIED_LETTERS[2] = str(VerifEntry3.get())
     VERIFIED_LETTERS[3] = str(VerifEntry4.get())
     VERIFIED_LETTERS[4] = str(VerifEntry5.get())
-    VeriLabel = Label(root, text = str(VERIFIED_LETTERS))
-    VeriLabel.grid(row = 10)
+    VeriLabel = Label(VeriFrame, text = str(VERIFIED_LETTERS))
+    VeriLabel.grid(row = 2)
 
     
+answerList = []
 
-#Tkinter button setup
-EntryAdd = Button(root, text = 'Add Dead Letters', command = addDead)
-DicAdd = Button(root, text = 'Add flawed Dictionary', command = addDic)
-VeriAdd = Button(root, text = 'Add Verified Letters', command = addVeri)
 
-#Layout of Buttons and Entrys
-D1Entry.grid(row = 0, column = 0, columnspan = 5)
-EntryAdd.grid(row = 0, column = 5, columnspan = 2)
-DicEntry.grid(row = 2, column = 0, columnspan = 2)
-ValEntry.grid(row = 2, column = 2, columnspan = 2)
-DicAdd.grid(row = 2, column = 4, columnspan = 2)
-VerifEntry1.grid(row = 4, column = 0, columnspan = 2)
-VerifEntry2.grid(row = 4, column = 2, columnspan = 2)
-VerifEntry3.grid(row = 4, column = 4, columnspan = 2)
-VerifEntry4.grid(row = 4, column = 6, columnspan = 2)
-VerifEntry5.grid(row = 4, column = 8, columnspan = 2)
-VeriAdd.grid(row = 5, column = 0, columnspan = 3)
+
+
+#DeadLetters Frame
+DeadFrame = Frame(root, bg = 'red')
+D1Entry = Entry(DeadFrame, width = 2)
+D1Entry.grid(row = 0, column = 0)
+EntryAdd = Button(DeadFrame, padx = 20, text = 'Add Dead Letters', command = addDead)
+EntryAdd.grid(row = 0, column = 1)
+DeadFrame.pack(fill = 'x')
+
+#Dictionary Frame
+DicFrame = Frame(root, bg = 'blue')
+DicEntry = Entry(DicFrame, width = 2)
+ValEntry = Entry(DicFrame, width = 2)
+DicAdd = Button(DicFrame, padx = 5, text = 'Add Flawed Dictionary', command = addDic)
+DicEntry.grid(row = 0, column = 0)
+ValEntry.grid(row = 0, column = 1)
+DicAdd.grid(row = 0, column = 2)
+DicFrame.pack(fill = 'x')
+
+#Verified Frame
+VeriFrame = Frame(root, bg = 'green')
+VerifEntry1 = Entry(VeriFrame, width = 2)
+VerifEntry2 = Entry(VeriFrame, width = 2)
+VerifEntry3 = Entry(VeriFrame, width = 2)
+VerifEntry4 = Entry(VeriFrame, width = 2)
+VerifEntry5 = Entry(VeriFrame, width = 2)
+VeriAdd = Button(VeriFrame, text = 'Add Verified Letters', command = addVeri)
+VerifEntry1.grid(row = 0, column = 0, padx = 1)
+VerifEntry2.grid(row = 0, column = 1, padx = 1)
+VerifEntry3.grid(row = 0, column = 2, padx = 1)
+VerifEntry4.grid(row = 0, column = 3, padx = 1)
+VerifEntry5.grid(row = 0, column = 4, padx = 1)
+VeriAdd.grid(row = 1, columnspan = 5)
+VeriFrame.pack(fill = 'x')
+
+
+
+
+
 
 
 """Do not edit code below this line!"""
@@ -234,9 +245,14 @@ def _read_file(filename):
 def clearAnswer():
     answerList.clear()
 
-#The answer button
-AnswerShow = Button(root, text = "Show Answer", command = main)
-AnswerShow.grid(row = 6, column = 2, ipadx = 100)
+#Answer Frame
+AnswerFrame = Frame(root, bg = 'yellow')
+AnsLabel = Label(AnswerFrame)
+AnsLabel.grid(row = 1)
+AnswerShow = Button(AnswerFrame, text = "Show Answer", command = main)
+AnswerShow.grid(row = 0)
+AnswerFrame.pack(fill = 'x')
 
 root.mainloop()
 
+#Key binding: https://www.plus2net.com/python/tkinter-events.php
