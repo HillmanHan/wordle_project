@@ -1,12 +1,13 @@
 from tkinter import *
 root = Tk()
 root.title('Wordle Solver')
-
+root.geometry('240x400')
 import json
 import os
 import string
 from collections import Counter, defaultdict
 from typing import Dict, List
+import sys
 
 DEAD_LETTERS = []
 
@@ -15,32 +16,40 @@ CORRECT_LETTERS_WRONG_POSITIONS: Dict[str, int] = {}
 VERIFIED_LETTERS: List[str] = ['', '', '', '', '']
 
 answerList = []
-AnsLabel = Label(root)
-AnsLabel.grid(row = 9)
 
-#Tkinter entry setup
-D1Entry = Entry(root, width = 20)
-DicEntry = Entry(root, width = 20)
-ValEntry = Entry(root, width = 20)
-VerifEntry1 = Entry(root, width = 10)
-VerifEntry2 = Entry(root, width = 10)
-VerifEntry3 = Entry(root, width = 10)
-VerifEntry4 = Entry(root, width = 10)
-VerifEntry5 = Entry(root, width = 10)
 
 #Tkinter functions
 def addDead():
     DEAD_LETTERS.append(str(D1Entry.get()))
-    DeadLabel = Label(root, text = str(DEAD_LETTERS))
-    DeadLabel.grid(row = 1)
+    DeadLabel = Label(DeadFrame, text = str(DEAD_LETTERS))
+    DeadLabel.grid(row = 2, columnspan = 2)
+    D1Entry.delete(0,END)
+
+def DeadEnter(event):
+    DEAD_LETTERS.append(str(D1Entry.get()))
+    DeadLabel = Label(DeadFrame, text = str(DEAD_LETTERS))
+    DeadLabel.grid(row = 2, columnspan = 2)
+    D1Entry.delete(0,END)
 
 def addDic():
     if str(DicEntry.get()) in CORRECT_LETTERS_WRONG_POSITIONS:
         CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())].append(int(ValEntry.get()))
     else:
         CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())] = [int(ValEntry.get())]
-    DicLabel = Label(root, text = str(CORRECT_LETTERS_WRONG_POSITIONS))
-    DicLabel.grid(row = 3)
+    DicLabel = Label(DicFrame, text = str(CORRECT_LETTERS_WRONG_POSITIONS))
+    DicLabel.grid(row = 2, columnspan= 3)
+    DicEntry.delete(0,END)
+    ValEntry.delete(0,END)
+
+def DicEnter(event):
+    if str(DicEntry.get()) in CORRECT_LETTERS_WRONG_POSITIONS:
+        CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())].append(int(ValEntry.get()))
+    else:
+        CORRECT_LETTERS_WRONG_POSITIONS[str(DicEntry.get())] = [int(ValEntry.get())]
+    DicLabel = Label(DicFrame, text = str(CORRECT_LETTERS_WRONG_POSITIONS))
+    DicLabel.grid(row = 2, columnspan= 3)
+    DicEntry.delete(0,END)
+    ValEntry.delete(0,END)
 
 def addVeri():
     VERIFIED_LETTERS[0] = str(VerifEntry1.get())
@@ -48,28 +57,82 @@ def addVeri():
     VERIFIED_LETTERS[2] = str(VerifEntry3.get())
     VERIFIED_LETTERS[3] = str(VerifEntry4.get())
     VERIFIED_LETTERS[4] = str(VerifEntry5.get())
-    VeriLabel = Label(root, text = str(VERIFIED_LETTERS))
-    VeriLabel.grid(row = 10)
+    VeriLabel = Label(VeriFrame, text = str(VERIFIED_LETTERS))
+    VeriLabel.grid(row = 3, columnspan= 5)
+    VerifEntry1.delete(0,END)
+    VerifEntry2.delete(0,END)
+    VerifEntry3.delete(0,END)
+    VerifEntry4.delete(0,END)
+    VerifEntry5.delete(0,END)
 
-    
 
-#Tkinter button setup
-EntryAdd = Button(root, text = 'Add Dead Letters', command = addDead)
-DicAdd = Button(root, text = 'Add flawed Dictionary', command = addDic)
-VeriAdd = Button(root, text = 'Add Verified Letters', command = addVeri)
+def restart_program():
+    """Restarts the current program.
+    Note: this function does not return. Any cleanup action (like
+    saving data) must be done before calling this function."""
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
 
-#Layout of Buttons and Entrys
-D1Entry.grid(row = 0, column = 0, columnspan = 5)
-EntryAdd.grid(row = 0, column = 5, columnspan = 2)
-DicEntry.grid(row = 2, column = 0, columnspan = 2)
-ValEntry.grid(row = 2, column = 2, columnspan = 2)
-DicAdd.grid(row = 2, column = 4, columnspan = 2)
-VerifEntry1.grid(row = 4, column = 0, columnspan = 2)
-VerifEntry2.grid(row = 4, column = 2, columnspan = 2)
-VerifEntry3.grid(row = 4, column = 4, columnspan = 2)
-VerifEntry4.grid(row = 4, column = 6, columnspan = 2)
-VerifEntry5.grid(row = 4, column = 8, columnspan = 2)
-VeriAdd.grid(row = 5, column = 0, columnspan = 3)
+#Header
+HeaderFrame = Frame(root)
+HeadLabel = Label(HeaderFrame, text = 'Wordle Solver', font = ('Times 36'))
+HeadLabel.pack()
+HeaderFrame.pack(fill = 'x')
+
+#DeadLetters Frame
+DeadFrame = Frame(root)
+D1Label = Label(DeadFrame, text = 'Dead Letters', font = ('Arial 14'))
+D1Label.grid(row = 0,column = 0, columnspan= 2)
+D1Entry = Entry(DeadFrame, width = 10)
+D1Entry.grid(row = 1, column = 0)
+D1Entry.bind('<Return>', DeadEnter)
+EntryAdd = Button(DeadFrame, padx = 20, text = 'Add',font = ('Times 14'), command = addDead)
+EntryAdd.grid(row = 1, column = 1)
+DeadFrame.pack(fill = 'x')
+DeadFrame.grid_columnconfigure(0, weight = 1)
+DeadFrame.grid_columnconfigure(1, weight = 1)
+
+#Dictionary Frame
+DicFrame = Frame(root)
+DicLabel = Label(DicFrame, text = 'Flawed Letters', font = ('Arial 14'))
+DicLabel.grid(row = 0,column = 0, columnspan= 3)
+DicEntry = Entry(DicFrame, width = 5)
+ValEntry = Entry(DicFrame, width = 5)
+DicAdd = Button(DicFrame, padx = 5, text = 'Add', font = ('Times 14'), command = addDic)
+DicEntry.grid(row = 1, column = 0)
+ValEntry.grid(row = 1, column = 1)
+DicAdd.grid(row = 1, column = 2)
+ValEntry.bind('<Return>', DicEnter)
+DicFrame.pack(fill = 'x')
+DicFrame.grid_columnconfigure(0, weight = 1)
+DicFrame.grid_columnconfigure(1, weight = 1)
+DicFrame.grid_columnconfigure(2, weight = 1)
+
+#Verified Frame
+VeriFrame = Frame(root)
+VeriLabel = Label(VeriFrame, text = 'Verified Letters', font = ('Arial 14'))
+VeriLabel.grid(row = 0,column = 0, columnspan= 5)
+VerifEntry1 = Entry(VeriFrame, width = 2)
+VerifEntry2 = Entry(VeriFrame, width = 2)
+VerifEntry3 = Entry(VeriFrame, width = 2)
+VerifEntry4 = Entry(VeriFrame, width = 2)
+VerifEntry5 = Entry(VeriFrame, width = 2)
+VeriAdd = Button(VeriFrame, text = 'Confirm Verified Letters', font = ('Times 14'), command = addVeri)
+VerifEntry1.grid(row = 1, column = 0, padx = 1)
+VerifEntry2.grid(row = 1, column = 1, padx = 1)
+VerifEntry3.grid(row = 1, column = 2, padx = 1)
+VerifEntry4.grid(row = 1, column = 3, padx = 1)
+VerifEntry5.grid(row = 1, column = 4, padx = 1)
+VeriAdd.grid(row = 2, columnspan = 5)
+VeriFrame.pack(fill = 'x')
+VeriFrame.grid_columnconfigure(0, weight = 1)
+VeriFrame.grid_columnconfigure(1, weight = 1)
+VeriFrame.grid_columnconfigure(2, weight = 1)
+VeriFrame.grid_columnconfigure(3, weight = 1)
+VeriFrame.grid_columnconfigure(4, weight = 1)
+VeriFrame.grid_columnconfigure(5, weight = 1)
+
+
 
 
 """Do not edit code below this line!"""
@@ -93,7 +156,7 @@ def main():
     global DEAD_LETTERS_MINUS_VERIFIED
 
     ALPHABET = string.ascii_lowercase
-    NUM_BEST_GUESSES = 5  # The number of best guesses to return to the user
+    NUM_BEST_GUESSES = 3  # The number of best guesses to return to the user
 # We do this in case the user forgot to remove the letter from the dead letters when if it
 # becomes verified (such as double occurnaces).
     DEAD_LETTERS_MINUS_VERIFIED = set(DEAD_LETTERS) - set(VERIFIED_LETTERS)
@@ -234,9 +297,24 @@ def _read_file(filename):
 def clearAnswer():
     answerList.clear()
 
-#The answer button
-AnswerShow = Button(root, text = "Show Answer", command = main)
-AnswerShow.grid(row = 6, column = 2, ipadx = 100)
+#Answer Frame
+AnswerFrame = Frame(root)
+AnsLabel = Label(AnswerFrame)
+AnsLabel.grid(row = 1)
+AnswerShow = Button(AnswerFrame, text = "Show Answer", font = ('Times 14'), command = main)
+AnswerShow.grid(row = 0)
+AnswerFrame.pack(fill = 'x')
+AnswerFrame.grid_columnconfigure(0, weight = 1)
+
+#Restart Frame
+ResFrame = Frame(root)
+ResButton = Button(ResFrame, text="Restart", command=restart_program)
+ResButton.pack(side = RIGHT, padx = 0)
+EndText = Label(ResFrame, text = "by Hillman Han 2022", font = ('Ariel 10'))
+EndText.pack(side = RIGHT, padx = 0)
+ResFrame.pack(fill = 'x')
+
 
 root.mainloop()
 
+#Key binding: https://www.plus2net.com/python/tkinter-events.php
