@@ -157,11 +157,9 @@ def main():
 
     ALPHABET = string.ascii_lowercase
     NUM_BEST_GUESSES = 3  # The number of best guesses to return to the user
-# We do this in case the user forgot to remove the letter from the dead letters when if it
-# becomes verified (such as double occurnaces).
     DEAD_LETTERS_MINUS_VERIFIED = set(DEAD_LETTERS) - set(VERIFIED_LETTERS)
     
-    # TODO: Longterm we should grab the lists from the site in the chance they get updated overtime
+    #Read the list
     answer_list = _read_file('wordle_answers.json')
     non_answer_possible_words = _read_file('non_wordle_answers.json')
     combined_lists = answer_list + non_answer_possible_words  # noqa
