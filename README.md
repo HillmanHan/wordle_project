@@ -1,5 +1,5 @@
 # wordle_project
-A Wordle solver inspired by the popular game Wordle
+A Wordle solver inspired by the popular web-page puzzle game Wordle
 
 ## How to use
 
